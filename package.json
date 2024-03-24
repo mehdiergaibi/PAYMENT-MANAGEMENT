@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@nestjs/mapped-types": "^2.0.5"
+  }
+}
