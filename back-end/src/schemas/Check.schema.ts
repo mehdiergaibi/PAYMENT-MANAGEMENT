@@ -7,7 +7,7 @@ export class Check {
   CheckNumber: string;
 
   @Prop({ required: true })
-  CheckAmount: number;
+  CheckAmount: string;
 
   @Prop({ required: true, type: Date })
   DepositDate: Date;

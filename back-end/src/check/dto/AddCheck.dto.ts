@@ -6,7 +6,7 @@ export class AddCheckDto {
   CheckNumber: string;
 
   @IsNotEmpty()
-  CheckAmount: number;
+  CheckAmount: string;
 
   @IsNotEmpty()
   DepositDate: Date;

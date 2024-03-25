@@ -26,7 +26,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { type Check, checks, banks, depositeStatus } from "./DataTest";
+import { banks, depositeStatus } from "./DataTest";
+import { type Check } from "../types/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -38,7 +39,7 @@ const Example = () => {
   const columns = useMemo<MRT_ColumnDef<Check>[]>(
     () => [
       {
-        accessorKey: "id",
+        accessorKey: "_id",
         header: "Id",
         enableEditing: false,
         size: 80,
@@ -161,7 +162,6 @@ const Example = () => {
       await createUser(values);
       table.setCreatingRow(null); //exit creating mode
     };
-
   //UPDATE action
   const handleSaveUser: MRT_TableOptions<Check>["onEditingRowSave"] = async ({
     values,
@@ -180,7 +180,7 @@ const Example = () => {
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Check>) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      deleteUser(row.original.id);
+      deleteUser(row.original._id);
     }
   };
 
@@ -190,7 +190,7 @@ const Example = () => {
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
-    getRowId: (row) => row.id,
+    getRowId: (row) => row._id,
     muiToolbarAlertBannerProps: isLoadingUsersError
       ? {
           color: "error",
@@ -278,10 +278,9 @@ const Example = () => {
 //CREATE hook (post new user to api)
 function useCreateUser() {
   const queryClient = useQueryClient();
-// it neeeeeeeeeeeds userid and client id hahahah
+  // it neeeeeeeeeeeds userid and client id hahahah
   return useMutation({
     mutationFn: async (user: Check) => {
-     
       try {
         // Send HTTP POST request to your API endpoint with user data
         const response = await axios.post(
@@ -310,15 +309,19 @@ function useCreateUser() {
 //READ hook (get users from api)
 function useGetUsers() {
   return useQuery<Check[]>({
-    queryKey: ['users'],
+    queryKey: ["users"],
     queryFn: async () => {
-       /* await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
+      /* await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
       return Promise.resolve(fakeData); */ // to get data from file
-      try { // get users form real api
-        const response = await axios.get<Check[]>('http://localhost:8080/check');
+      try {
+        // get users form real api
+        const response = await axios.get<Check[]>(
+          "http://localhost:8080/check"
+        );
+        //console.log(response.data);
         return response.data;
       } catch (error) {
-        throw new Error('Failed to fetch users');
+        throw new Error("Failed to fetch users");
       }
     },
     refetchOnWindowFocus: false,
@@ -331,18 +334,22 @@ function useUpdateUser() {
   return useMutation({
     mutationFn: async (user: Check) => {
       //send api update request here
+      console.log(user);
       try {
-        const response = await axios.patch(`http://localhost:8080/check/update/${user.id}`, user); // Using axios.patch instead of axios.put
+        const response = await axios.patch<Check[]>(
+          `http://localhost:8080/check/update-check/${user._id}`,
+          user
+        ); // Using axios.patch instead of axios.put
         return response.data; // Assuming your backend returns updated user data
       } catch (error) {
-        throw new Error('Failed to update user'); // Throw error response data for handling in the mutation
+        throw new Error("Failed to update user"); // Throw error response data for handling in the mutation
       }
     },
     //client side optimistic update
     onMutate: (newUserInfo: Check) => {
       queryClient.setQueryData(["users"], (prevUsers: any) =>
         prevUsers?.map((prevUser: Check) =>
-          prevUser.id === newUserInfo.id ? newUserInfo : prevUser
+          prevUser._id === newUserInfo._id ? newUserInfo : prevUser
         )
       );
     },
@@ -356,13 +363,27 @@ function useDeleteUser() {
   return useMutation({
     mutationFn: async (userId: string) => {
       //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-      return Promise.resolve();
+      /* await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
+      return Promise.resolve(); */
+      try {
+        // Make DELETE request to API endpoint to delete user
+        await axios.delete(
+          `http://localhost:8080/check/delete-check/${userId}`
+        );
+
+        // Simulate delay for demonstration purposes
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        return Promise.resolve();
+      } catch (error) {
+        // Handle error
+        return Promise.reject(error);
+      }
     },
     //client side optimistic update
     onMutate: (userId: string) => {
-      queryClient.setQueryData(['users'], (prevUsers: any) =>
-        prevUsers?.filter((user: Check) => user.id !== userId),
+      queryClient.setQueryData(["users"], (prevUsers: any) =>
+        prevUsers?.filter((user: Check) => user._id !== userId)
       );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }), //refetch users after mutation, disabled for demo
@@ -376,8 +397,6 @@ const ExampleWithProviders = () => (
     <Example />
   </QueryClientProvider>
 );
-
-export default ExampleWithProviders;
 
 const validateRequired = (value: string) => !!value.length;
 /* const validateEmail = (email: string) =>
@@ -410,3 +429,4 @@ function validateUser(user: Check) {
      */
   };
 }
+export default ExampleWithProviders;

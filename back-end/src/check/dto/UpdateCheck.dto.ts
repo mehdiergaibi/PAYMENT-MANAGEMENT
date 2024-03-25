@@ -12,7 +12,7 @@ export class UpdateCheckDto  extends PartialType(AddCheckDto) {
   
     @IsNotEmpty()
     @IsOptional()
-    CheckAmount: number;
+    CheckAmount: string;
   
     @IsNotEmpty()
     @IsOptional()

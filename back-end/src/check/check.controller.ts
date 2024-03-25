@@ -27,19 +27,19 @@ export class CheckController {
     if (!isIdValid) throw new HttpException('Invaid Id', 400);
   }
 
-  /* @Get()
-  getAllChecks() {
-    return this.checkService.getAllChecks(@Request() request);
-  } */
   @Get()
+  getAllChecks() {
+    return this.checkService.getAllChecks();
+  } 
+/*   @Get()
   getAllChecks(@Request() request: ExpressRequest) {
-    //console.log(request.user);
-    if (!request.user) {
+    console.log(request.user);
+     if (!request.user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
     }
-    return request.user.checks;
+    return request.user?.checks;
   }
-
+ */
   @Get(':id')
   async getCheckById(@Param('id') id: string) {
     this.isIdValid(id);
@@ -64,7 +64,7 @@ export class CheckController {
 
     const updatedUser = await this.checkService.updateCheck(id, updateCheckDto);
     if (!updatedUser) throw new HttpException('check not found', 404);
-    return 'updated';
+    return updatedUser;
   }
 
   @Delete('/delete-check/:id')
@@ -72,6 +72,6 @@ export class CheckController {
     this.isIdValid(id);
     const deletedCheck = await this.checkService.deleteCheck(id);
     if (!deletedCheck) throw new HttpException('check not found', 404);
-    return 'deleted';
+    return deletedCheck;
   }
 }

@@ -18,9 +18,10 @@ export class CheckService {
 
   ) {}
 
-  /* getAllChecks(@Request() request: ExpressRequest) {
-    return request.user.checks;
-  } */
+  getAllChecks() {
+    return this.checkModel.find();
+  }
+  
   getCheckById(id: string) {
     return this.checkModel.findById(id);
   }
