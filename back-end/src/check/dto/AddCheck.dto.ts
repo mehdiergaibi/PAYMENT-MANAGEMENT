@@ -45,12 +45,12 @@ export class AddCheckDto {
   @IsIn(['deposited', 'pending', 'not deposited'])
   DepositStatus: string;
 
-  @IsString()
+  /* @IsString()
   @IsNotEmpty()
   userId : string;
 
   @IsString()
   @IsNotEmpty()
-  clientId : string;
+  clientId : string; */
 
 }

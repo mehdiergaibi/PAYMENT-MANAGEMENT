@@ -25,7 +25,7 @@ export class CheckService {
   getCheckById(id: string) {
     return this.checkModel.findById(id);
   }
-  async addCheck({ userId,clientId, ...addCheckDto }: AddCheckDto) {
+  async addCheck({ /* userId,clientId, */ ...addCheckDto }: AddCheckDto) {
     const check = await this.checkModel.findOne({
       CheckNumber: addCheckDto.CheckNumber,
     });
@@ -35,13 +35,13 @@ export class CheckService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    const findUser = await this.userModel.findById(userId);
+    /* const findUser = await this.userModel.findById(userId);
     if (!findUser) throw new HttpException('user not found', 404);
     const findClient = await this.clientModel.findById(clientId);
-    if (!findClient) throw new HttpException('client not found', 404);
+    if (!findClient) throw new HttpException('client not found', 404); */
     const newCheck = new this.checkModel(addCheckDto);
     const savedCheck = await newCheck.save();
-    await findUser.updateOne({
+ /*    await findUser.updateOne({
       $push: {
         checks: savedCheck._id,
 
@@ -52,7 +52,7 @@ export class CheckService {
         checks: savedCheck._id,
         
       },
-    });
+    }); */
     return savedCheck;
   }
   async updateCheck(id: string, updateCheckDto: UpdateCheckDto) {

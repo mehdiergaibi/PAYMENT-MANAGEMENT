@@ -220,6 +220,7 @@ const Example = () => {
         </DialogActions>
       </>
     ),
+
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
@@ -281,16 +282,29 @@ function useCreateUser() {
   // it neeeeeeeeeeeds userid and client id hahahah
   return useMutation({
     mutationFn: async (user: Check) => {
+      console.log(user);
+      const createUser = {
+        BankName: user.BankName,
+        CheckAmount: user.CheckAmount,
+        CheckNumber: user.CheckNumber,
+        ClientName: user.ClientName,
+        DepositDate: user.DepositDate,
+        DepositStatus: user.DepositStatus,
+      };
       try {
         // Send HTTP POST request to your API endpoint with user data
         const response = await axios.post(
           "http://localhost:8080/check/add-check",
-          user
+          createUser
         );
-
         // Return the created user data
-        return response.data;
+        return (
+          <>
+            {response.data}
+          </>
+        );
       } catch (error) {
+        console.log(error);
         throw new Error("Failed to create user");
       }
     },
@@ -334,7 +348,7 @@ function useUpdateUser() {
   return useMutation({
     mutationFn: async (user: Check) => {
       //send api update request here
-      console.log(user);
+      //console.log(user);
       try {
         const response = await axios.patch<Check[]>(
           `http://localhost:8080/check/update-check/${user._id}`,

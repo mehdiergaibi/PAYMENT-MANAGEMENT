@@ -12,6 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
+import Alert from "@mui/material/Alert";
 
 function Copyright(props: any) {
   return (
@@ -35,6 +36,8 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const [isError, setIsError] = React.useState(false);
+  const [error, setError] = React.useState([]);
   const toast = useToast();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,8 +64,10 @@ export default function SignUp() {
         isClosable: true,
       });
       return response.data;
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch (error: any) {
+      //console.error("Login failed:", error.response.data.message);
+      setIsError(true);
+      setError(error.response.data.message);
       throw new Error("Login failed");
     }
     /* console.log({
@@ -87,9 +92,15 @@ export default function SignUp() {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {isError && (
+            <Box component="section" sx={{ p: 1 }}>
+              <Alert severity="error">{error[0]}</Alert>
+            </Box>
+          )}
           <Box
             component="form"
             noValidate
