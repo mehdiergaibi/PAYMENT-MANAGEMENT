@@ -5,7 +5,7 @@
   "name": "payment-management",
   "version": "1.0.0",
   "description": "check management",
-  "main": "index.js",
+  "main": "main.tsx",
   "dependencies": {
     "iterare": "^1.2.1",
     "reflect-metadata": "^0.2.1",
