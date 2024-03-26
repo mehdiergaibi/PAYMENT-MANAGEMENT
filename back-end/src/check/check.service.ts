@@ -7,6 +7,7 @@ import { UpdateCheckDto } from './dto/UpdateCheck.dto';
 import { User } from 'src/schemas/User.schema';
 import { ExpressRequest } from 'src/middlewares/auth.middleware';
 import { Client } from 'src/schemas/Client.schema';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class CheckService {
@@ -15,13 +16,13 @@ export class CheckService {
 
     @InjectModel('user') private userModel: Model<User>,
     @InjectModel('client') private clientModel: Model<Client>,
-
+    private readonly emailService: EmailService,
   ) {}
 
   getAllChecks() {
     return this.checkModel.find();
   }
-  
+
   getCheckById(id: string) {
     return this.checkModel.findById(id);
   }
@@ -41,7 +42,7 @@ export class CheckService {
     if (!findClient) throw new HttpException('client not found', 404); */
     const newCheck = new this.checkModel(addCheckDto);
     const savedCheck = await newCheck.save();
- /*    await findUser.updateOne({
+    /*    await findUser.updateOne({
       $push: {
         checks: savedCheck._id,
 
@@ -60,5 +61,18 @@ export class CheckService {
   }
   deleteCheck(id: string) {
     return this.checkModel.findByIdAndDelete(id);
+  }
+
+  async findChecksForDeposit(daysBefore: number): Promise<Check[]> {
+    // Calculate the date 3 days from now
+    const theDate = new Date();
+    theDate.setDate(theDate.getDate() + daysBefore);
+
+    const checksReadyForDeposite = this.checkModel
+      .find({ DepositStatus: { $in: ['not deposited', 'pending'] }, depositDate: { $lte: theDate },  })
+      .exec();
+    //console.log('working');
+    // Find checks due for deposit before the calculated date
+    return checksReadyForDeposite;
   }
 }

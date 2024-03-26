@@ -19,6 +19,7 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
+
 import {
   QueryClient,
   QueryClientProvider,
@@ -282,7 +283,7 @@ function useCreateUser() {
   // it neeeeeeeeeeeds userid and client id hahahah
   return useMutation({
     mutationFn: async (user: Check) => {
-      console.log(user);
+      //console.log(user);
       const createUser = {
         BankName: user.BankName,
         CheckAmount: user.CheckAmount,
@@ -298,11 +299,7 @@ function useCreateUser() {
           createUser
         );
         // Return the created user data
-        return (
-          <>
-            {response.data}
-          </>
-        );
+        return <>{response.data}</>;
       } catch (error) {
         console.log(error);
         throw new Error("Failed to create user");

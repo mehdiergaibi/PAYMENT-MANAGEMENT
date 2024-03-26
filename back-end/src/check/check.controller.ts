@@ -74,4 +74,5 @@ export class CheckController {
     if (!deletedCheck) throw new HttpException('check not found', 404);
     return deletedCheck;
   }
+
 }
