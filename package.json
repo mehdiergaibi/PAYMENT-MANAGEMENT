@@ -1,5 +1,21 @@
 {
   "devDependencies": {
     "@nestjs/mapped-types": "^2.0.5"
-  }
+  },
+  "name": "payment-management",
+  "version": "1.0.0",
+  "description": "check management",
+  "main": "index.js",
+  "dependencies": {
+    "iterare": "^1.2.1",
+    "reflect-metadata": "^0.2.1",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.2",
+    "uid": "^2.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mehdi ergaibi",
+  "license": "ISC"
 }

@@ -8,7 +8,8 @@ import { LoginUserDto } from './dto/LoginUser.dto';
 import { compare } from 'bcrypt';
 import { UserResponseType } from 'src/types/userResponse.type';
 import { sign } from 'jsonwebtoken';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Injectable()
 export class UserService {
   constructor(@InjectModel('user') private userModel: Model<User>) {}
@@ -59,7 +60,7 @@ export class UserService {
     };
   }
   genarateJWT(user: User): string {
-    return sign({ email: user.email }, 'JWT_SECRET');
+    return sign({ email: user.email }, process.env.JWT_SECRET );
   }
   async findByEmail(email: string) {
     return this.userModel.findOne({ email });

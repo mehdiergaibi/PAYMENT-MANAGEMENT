@@ -9,11 +9,12 @@ import { ClientsModule } from './clients/clients.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailModule } from './email/email.module';
 import { NotificationModule } from './notification/notification.module';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://ergaibimhdi:9XVqS99WpwofPBOm@cluster0.rcbecml.mongodb.net/',
+      process.env.MONGODB_URL,
     ),
     UserModule,
     CheckModule,

@@ -3,6 +3,8 @@ import { verify } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import { User } from 'src/schemas/User.schema';
 import { UserService } from 'src/user/user.service';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export interface ExpressRequest extends Request {
   user?: User;
@@ -21,7 +23,7 @@ export class AuthMiddlware implements NestMiddleware {
     const token = req.headers['authorization'].split(' ')[1];
 
     try {
-      const decode = verify(token, 'JWT_SECRET') as { email: string };
+      const decode = verify(token, process.env.JWT_SECRET) as { email: string };
       const user = await this.userService.findByEmail(decode.email);
       req.user = user;
       next();

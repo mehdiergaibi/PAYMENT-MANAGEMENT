@@ -6,11 +6,14 @@ import SignIn from "./login/Login";
 import SignUp from "./login/Register";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
+import Nav from "./Nav";
 
 function App() {
   return (
     <>
       <BrowserRouter>
+      <Nav />
+
         <Routes>
           <Route path="/">
             <Route index element={<Home />} />
