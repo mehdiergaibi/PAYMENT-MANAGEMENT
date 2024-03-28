@@ -9,7 +9,6 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import axios from "axios";
-
 import {
   Box,
   Button,
@@ -90,7 +89,9 @@ const Example = () => {
               DepositDate: undefined,
             }),
         },
+        
       },
+      
       {
         accessorKey: "BankName",
         header: "Bank Name",
@@ -426,7 +427,8 @@ function validateUser(user: Check) {
     CheckAmount: !validateRequired(user.CheckAmount)
       ? "Check amount is Required"
       : "",
-    DepositDate: !validateRequired(user.DepositDate)
+   
+      DepositDate: !validateRequired(user.DepositDate)
       ? "Deposite date is Required"
       : "",
     BankName: !validateRequired(user.BankName) ? "Bank name is Required" : "",

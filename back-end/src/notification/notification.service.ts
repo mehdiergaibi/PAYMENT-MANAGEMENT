@@ -13,7 +13,7 @@ export class NotificationService {
       @Cron(CronExpression.EVERY_DAY_AT_6PM)
   async sendCheckDepositNotifications() {
     // Get checks due for deposit in the next 3 days
-    const checksDueForDeposit = await this.checkService.findChecksForDeposit(3);
+    const checksDueForDeposit = await this.checkService.findChecksForDeposit(5);
 
     // Send email notifications to users for each check due for deposit
     for (const check of checksDueForDeposit) {

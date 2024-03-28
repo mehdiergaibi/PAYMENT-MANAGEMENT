@@ -5,10 +5,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  //const PORT = process.env.PORT;
+  const PORT = process.env.PORT;
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   //app.setGlobalPrefix('api');
-  await app.listen(8080);
+  await app.listen(PORT);
 }
 bootstrap();

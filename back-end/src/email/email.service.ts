@@ -34,7 +34,8 @@ export class EmailService {
         from: 'checkwise603@gmail.com',
         to: 'ergaibi.mhdi@gmail.com',
         subject: 'Check Deposit Reminder',
-        text: htmlContent,
+/*         text: htmlContent,
+ */        html: htmlContent
       };
 
       // Send email

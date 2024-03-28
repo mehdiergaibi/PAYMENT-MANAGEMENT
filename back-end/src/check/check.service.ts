@@ -65,11 +65,13 @@ export class CheckService {
 
   async findChecksForDeposit(daysBefore: number): Promise<Check[]> {
     // Calculate the date 3 days from now
-    const theDate = new Date();
+    const theDate = new Date(Date());
     theDate.setDate(theDate.getDate() + daysBefore);
 
+    console.log(theDate);
+    //console.log(this.checkModel.find({depositDate: { $lte: theDate }}))
     const checksReadyForDeposite = this.checkModel
-      .find({ DepositStatus: { $in: ['not deposited', 'pending'] }, depositDate: { $lte: theDate },  })
+      .find({ DepositStatus: { $in: ['not deposited', 'pending'] }, DepositDate: { $lte: theDate } })
       .exec();
     //console.log('working');
     // Find checks due for deposit before the calculated date
