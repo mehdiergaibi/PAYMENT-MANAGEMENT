@@ -14,17 +14,14 @@ export class UpdateClientDto extends PartialType(AddClientDto) {
 
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber()
   @IsOptional()
   phoneNumber: string;
 
-  @IsNotEmpty()
-  @IsString()
+ 
   @IsOptional()
   address: string;
 
-  @IsNotEmpty()
-  @IsString()
+ 
   @IsOptional()
   note: string;
 }

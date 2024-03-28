@@ -22,7 +22,10 @@ export class ClientsController {
     const isIdValid = mongoose.Types.ObjectId.isValid(id);
     if (!isIdValid) throw new HttpException('Invaid Id', 400);
   }
-
+  @Get()
+  getAllClients() {
+    return this.clientService.getAllClients();
+  }
   @Post('/add-client')
   @UsePipes(new ValidationPipe())
   async addClient(@Body() addClientDto: AddClientDto) {

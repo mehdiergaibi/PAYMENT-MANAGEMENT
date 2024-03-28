@@ -19,7 +19,7 @@ export class Client {
   @Prop({ required: false})
   note: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Check' }] })
-  checks: Check[];
+  /* @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Check' }] })
+  checks: Check[]; */
 }
 export const ClientSchema = SchemaFactory.createForClass(Client); // thiis retutn  the the schema

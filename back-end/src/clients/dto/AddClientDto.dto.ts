@@ -7,16 +7,13 @@ export class AddClientDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber()
   phoneNumber: string;
 
 
-  @IsNotEmpty()
-  @IsString()
+  
   address: string;
 
-  @IsNotEmpty()
-  @IsString()
+  
   note: string;
 
 }

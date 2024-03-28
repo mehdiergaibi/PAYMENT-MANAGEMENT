@@ -9,6 +9,9 @@ import { UpdateClientDto } from './dto/UpdateClientDto.dto';
 @Injectable()
 export class ClientsService {
   constructor(@InjectModel('client') private clientModel: Model<Client>) {}
+  getAllClients() {
+    return this.clientModel.find();
+  }
   async addClient(addClientDto: AddClientDto) {
     const client = await this.clientModel.findOne({
       phoneNumber: addClientDto.phoneNumber,

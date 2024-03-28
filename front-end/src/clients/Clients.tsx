@@ -27,17 +27,16 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { banks, depositeStatus } from "./DataTest";
-import { type Check } from "../types/Check";
+import { type Client } from "../types/Client";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const Example = () => {
+const Client = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
 
-  const columns = useMemo<MRT_ColumnDef<Check>[]>(
+  const columns = useMemo<MRT_ColumnDef<Client>[]>(
     () => [
       {
         accessorKey: "_id",
@@ -46,88 +45,64 @@ const Example = () => {
         size: 80,
       },
       {
-        accessorKey: "CheckNumber",
-        header: "Check Number",
+        accessorKey: "name",
+        header: "name",
         muiEditTextFieldProps: {
           required: true,
-          error: !!validationErrors?.CheckNumber,
-          helperText: validationErrors?.CheckNumber,
+          error: !!validationErrors?.name,
+          helperText: validationErrors?.name,
           //remove any previous validation errors when user focuses on the input
           onFocus: () =>
             setValidationErrors({
               ...validationErrors,
-              CheckNumber: undefined,
+              name: undefined,
             }),
           //optionally add validation checking for onBlur or onChange
         },
       },
       {
-        accessorKey: "CheckAmount",
-        header: "Check Amount",
+        accessorKey: "phoneNumber",
+        header: "phoneNumber",
         muiEditTextFieldProps: {
           required: true,
-          error: !!validationErrors?.CheckAmount,
-          helperText: validationErrors?.CheckAmount,
+          error: !!validationErrors?.phoneNumber,
+          helperText: validationErrors?.phoneNumber,
           //remove any previous validation errors when user focuses on the input
           onFocus: () =>
             setValidationErrors({
               ...validationErrors,
-              CheckAmount: undefined,
+              phoneNumber: undefined,
             }),
         },
       },
       {
-        accessorKey: "DepositDate",
-        header: "Deposit Date",
+        accessorKey: "address",
+        header: "address",
         muiEditTextFieldProps: {
-          required: true,
-          error: !!validationErrors?.DepositDate,
-          helperText: validationErrors?.DepositDate,
+          required: false,
+          error: !!validationErrors?.address,
+          helperText: validationErrors?.address,
           //remove any previous validation errors when user focuses on the input
           onFocus: () =>
             setValidationErrors({
               ...validationErrors,
-              DepositDate: undefined,
+              address: undefined,
             }),
         },
       },
       {
-        accessorKey: "BankName",
-        header: "Bank Name",
-        editVariant: "select",
-        editSelectOptions: banks,
+        accessorKey: "note",
+        header: "note",
         muiEditTextFieldProps: {
-          required: true,
-          select: true,
-          error: !!validationErrors?.BankName,
-          helperText: validationErrors?.BankName,
-        },
-      },
-      {
-        accessorKey: "ClientName",
-        header: "Client Name",
-        muiEditTextFieldProps: {
-          required: true,
-          error: !!validationErrors?.ClientName,
-          helperText: validationErrors?.ClientName,
+          required: false,
+          error: !!validationErrors?.note,
+          helperText: validationErrors?.note,
           //remove any previous validation errors when user focuses on the input
           onFocus: () =>
             setValidationErrors({
               ...validationErrors,
-              ClientName: undefined,
+              note: undefined,
             }),
-        },
-      },
-      {
-        accessorKey: "DepositStatus",
-        header: "Deposit Status",
-        editVariant: "select",
-        editSelectOptions: depositeStatus,
-        muiEditTextFieldProps: {
-          required: true,
-          select: true,
-          error: !!validationErrors?.DepositStatus,
-          helperText: validationErrors?.DepositStatus,
         },
       },
     ],
@@ -152,7 +127,7 @@ const Example = () => {
     useDeleteUser();
 
   //CREATE action
-  const handleCreateUser: MRT_TableOptions<Check>["onCreatingRowSave"] =
+  const handleCreateUser: MRT_TableOptions<Client>["onCreatingRowSave"] =
     async ({ values, table }) => {
       const newValidationErrors = validateUser(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
@@ -164,7 +139,7 @@ const Example = () => {
       table.setCreatingRow(null); //exit creating mode
     };
   //UPDATE action
-  const handleSaveUser: MRT_TableOptions<Check>["onEditingRowSave"] = async ({
+  const handleSaveUser: MRT_TableOptions<Client>["onEditingRowSave"] = async ({
     values,
     table,
   }) => {
@@ -179,7 +154,7 @@ const Example = () => {
   };
 
   //DELETE action
-  const openDeleteConfirmModal = (row: MRT_Row<Check>) => {
+  const openDeleteConfirmModal = (row: MRT_Row<Client>) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteUser(row.original._id);
     }
@@ -210,7 +185,7 @@ const Example = () => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">New CHECK</DialogTitle>
+        <DialogTitle variant="h3">New Client</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -225,7 +200,7 @@ const Example = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">Edit User</DialogTitle>
+        <DialogTitle variant="h3">Edit Client</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -263,7 +238,7 @@ const Example = () => {
           // );
         }}
       >
-        New CHECK
+        New Client
       </Button>
     ),
     state: {
@@ -282,33 +257,31 @@ function useCreateUser() {
   const queryClient = useQueryClient();
   // it neeeeeeeeeeeds userid and client id hahahah
   return useMutation({
-    mutationFn: async (user: Check) => {
+    mutationFn: async (user: Client) => {
       //console.log(user);
       const createUser = {
-        BankName: user.BankName,
-        CheckAmount: user.CheckAmount,
-        CheckNumber: user.CheckNumber,
-        ClientName: user.ClientName,
-        DepositDate: user.DepositDate,
-        DepositStatus: user.DepositStatus,
+        name: user.name,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+        note: user.note,
       };
       try {
         // Send HTTP POST request to your API endpoint with user data
         const response = await axios.post(
-          "http://localhost:8080/check/add-check",
+          "http://localhost:8080/clients/add-client",
           createUser
         );
         // Return the created user data
         return <>{response.data}</>;
       } catch (error) {
         console.log(error);
-        throw new Error("Failed to create user");
+        throw new Error("Failed to create client");
       }
     },
-    onMutate: (newUserInfo: Check) => {
-      queryClient.setQueryData<Check[]>(
+    onMutate: (newUserInfo: Client) => {
+      queryClient.setQueryData<Client[]>(
         ["users"],
-        (prevUsers: Check[] | undefined) => [
+        (prevUsers: Client[] | undefined) => [
           ...(prevUsers || []),
           newUserInfo, // Use existing ID optimistically
         ]
@@ -319,15 +292,15 @@ function useCreateUser() {
 
 //READ hook (get users from api)
 function useGetUsers() {
-  return useQuery<Check[]>({
+  return useQuery<Client[]>({
     queryKey: ["users"],
     queryFn: async () => {
       /* await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
       return Promise.resolve(fakeData); */ // to get data from file
       try {
         // get users form real api
-        const response = await axios.get<Check[]>(
-          "http://localhost:8080/check"
+        const response = await axios.get<Client[]>(
+          "http://localhost:8080/clients"
         );
         //console.log(response.data);
         return response.data;
@@ -343,12 +316,12 @@ function useGetUsers() {
 function useUpdateUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (user: Check) => {
+    mutationFn: async (user: Client) => {
       //send api update request here
       //console.log(user);
       try {
-        const response = await axios.patch<Check[]>(
-          `http://localhost:8080/check/update-check/${user._id}`,
+        const response = await axios.patch<Client[]>(
+          `http://localhost:8080/clients/update-client/${user._id}`,
           user
         ); // Using axios.patch instead of axios.put
         return response.data; // Assuming your backend returns updated user data
@@ -357,9 +330,9 @@ function useUpdateUser() {
       }
     },
     //client side optimistic update
-    onMutate: (newUserInfo: Check) => {
+    onMutate: (newUserInfo: Client) => {
       queryClient.setQueryData(["users"], (prevUsers: any) =>
-        prevUsers?.map((prevUser: Check) =>
+        prevUsers?.map((prevUser: Client) =>
           prevUser._id === newUserInfo._id ? newUserInfo : prevUser
         )
       );
@@ -379,7 +352,7 @@ function useDeleteUser() {
       try {
         // Make DELETE request to API endpoint to delete user
         await axios.delete(
-          `http://localhost:8080/check/delete-check/${userId}`
+          `http://localhost:8080/clients/delete-client/${userId}`
         );
 
         // Simulate delay for demonstration purposes
@@ -394,7 +367,7 @@ function useDeleteUser() {
     //client side optimistic update
     onMutate: (userId: string) => {
       queryClient.setQueryData(["users"], (prevUsers: any) =>
-        prevUsers?.filter((user: Check) => user._id !== userId)
+        prevUsers?.filter((user: Client) => user._id !== userId)
       );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }), //refetch users after mutation, disabled for demo
@@ -402,42 +375,21 @@ function useDeleteUser() {
 }
 const queryClient = new QueryClient();
 
-const ExampleWithProviders = () => (
+const ClientTable = () => (
   //Put this with your other react-query providers near root of your app
   <QueryClientProvider client={queryClient}>
-    <Example />
+    <Client />
   </QueryClientProvider>
 );
 
 const validateRequired = (value: string) => !!value.length;
-/* const validateEmail = (email: string) =>
-  !!email.length &&
-  email
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    ); */
 
-function validateUser(user: Check) {
+function validateUser(user: Client) {
   return {
-    CheckNumber: !validateRequired(user.CheckNumber)
-      ? "check number is Required"
+    name: !validateRequired(user.name) ? "Client name is Required" : "",
+    phoneNumber: !validateRequired(user.phoneNumber)
+      ? "Client phone number is Required"
       : "",
-    CheckAmount: !validateRequired(user.CheckAmount)
-      ? "Check amount is Required"
-      : "",
-    DepositDate: !validateRequired(user.DepositDate)
-      ? "Deposite date is Required"
-      : "",
-    BankName: !validateRequired(user.BankName) ? "Bank name is Required" : "",
-    ClientName: !validateRequired(user.ClientName)
-      ? "Cient name is Required"
-      : "",
-    DepositStatus: !validateRequired(user.DepositStatus)
-      ? "Deposite status is Required"
-      : "",
-    /*     email: !validateEmail(user.email) ? "Incorrect Email Format" : "",
-     */
   };
 }
-export default ExampleWithProviders;
+export default ClientTable;
