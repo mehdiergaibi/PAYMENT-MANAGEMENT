@@ -1,5 +1,4 @@
-export type Check = {
-    _id: string;
+export type CheckType = {
     CheckNumber: string;
     CheckAmount: string;
     DepositDate: string;

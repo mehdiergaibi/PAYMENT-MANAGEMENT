@@ -43,7 +43,7 @@ export class Check {
 
   @Prop({
     type: String,
-    enum: ['deposited', 'pending', 'not deposited'],
+    enum: ['Deposited', 'Pending', 'Not Deposited'],
     required: true,
   })
   DepositStatus: string;

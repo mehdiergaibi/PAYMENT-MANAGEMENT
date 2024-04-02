@@ -53,6 +53,6 @@ export class UpdateCheckDto  extends PartialType(AddCheckDto) {
     @IsOptional()
 
     @IsString()
-    @IsIn(['deposited', 'pending', 'not deposited'])
+    @IsIn(['Deposited', 'Pending', 'Not Deposited'])
     DepositStatus: string; 
 }
