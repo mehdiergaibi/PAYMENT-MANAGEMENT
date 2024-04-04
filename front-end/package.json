@@ -23,7 +23,8 @@
     "framer-motion": "^11.0.20",
     "material-react-table": "^2.12.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-usestateref": "^1.0.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
