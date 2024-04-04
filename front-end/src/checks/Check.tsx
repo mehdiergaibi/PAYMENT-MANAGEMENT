@@ -1,11 +1,29 @@
 import { useState, useEffect } from "react";
-import { Alert, Snackbar, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import {
+  Alert,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import Paper from '@mui/material/Paper';
+import TableContainer from '@mui/material/TableContainer';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import AddCheck from "./AddCheck";
 import { CheckType } from "../types/Check";
 import EditCheckForm from "./EditCheck";
+/* import { makeStyles } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles({
+  tableContainer: {
+    overflowX: 'auto',
+  },
+}); */
 
 const columns = [
   "Actions",
@@ -66,7 +84,12 @@ export default function Check() {
     <div>
       {isDeleted && (
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: "100%" }}>
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             Check deleted successfully
           </Alert>
         </Snackbar>
@@ -74,7 +97,8 @@ export default function Check() {
       {!error ? (
         <div>
           <AddCheck />
-          <Table>
+          <TableContainer component={Paper}>
+          <Table sx={{tablLayout: 'fixed', whiteSpace: 'nowrap', minWidth: 925 }}  aria-label="simple table">
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -93,7 +117,10 @@ export default function Check() {
                 return (
                   <TableRow key={check.CheckNumber}>
                     <TableCell>
-                      <EditIcon style={{ cursor: "pointer" }} onClick={() => handleEditClick(check)} />
+                      <EditIcon
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleEditClick(check)}
+                      />
                       <DeleteIcon
                         style={{ color: "red", cursor: "pointer" }}
                         onClick={() => deleteCheck(check._id)}
@@ -110,7 +137,10 @@ export default function Check() {
               })}
             </TableBody>
           </Table>
-          {isEditing && selectedCheck && <EditCheckForm check={selectedCheck}  setIsEditing={setIsEditing} />}
+          </TableContainer>
+          {isEditing && selectedCheck && (
+            <EditCheckForm check={selectedCheck} setIsEditing={setIsEditing} />
+          )}
         </div>
       ) : (
         <h1 style={{ color: "red" }}>Error getting Checks</h1>
@@ -118,4 +148,3 @@ export default function Check() {
     </div>
   );
 }
-

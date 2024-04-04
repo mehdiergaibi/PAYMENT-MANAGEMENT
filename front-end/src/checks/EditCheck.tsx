@@ -148,7 +148,12 @@ const EditCheckForm = ({
       >
         <Box sx={style}>
           <Container>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              sx={{ width: "100%", marginBottom: 1 }}
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
               Edit Check
             </Typography>
           </Container>
@@ -159,7 +164,7 @@ const EditCheckForm = ({
               id="combo-box-demo"
               value={editCheckData.ClientName}
               options={clients.map((client) => client.name)}
-              sx={{ width: 300 }}
+              sx={{ width: "100%", marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Clients" />
               )}
@@ -171,6 +176,7 @@ const EditCheckForm = ({
             <TextField
               type="number"
               id="outlined-basic"
+              sx={{ width: "100%", marginBottom: 1 }}
               label="Check amount"
               variant="outlined"
               name="CheckAmount"
@@ -185,6 +191,7 @@ const EditCheckForm = ({
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 disablePast
+                sx={{ width: "100%", marginBottom: 1 }}
                 format="YYYY-MM-DD"
                 defaultValue={dayjs(formattedDate)}
                 onChange={(date) => handleChange("DepositDate", date)}
@@ -197,7 +204,7 @@ const EditCheckForm = ({
               disablePortal
               value={editCheckData.DepositStatus}
               options={depositStatus}
-              sx={{ width: 300 }}
+              sx={{ width: "100%", marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Deposit Status" />
               )}
@@ -211,7 +218,7 @@ const EditCheckForm = ({
               id="combo-box-demo"
               value={editCheckData.BankName}
               options={banks}
-              sx={{ width: 300 }}
+              sx={{ width: "100%", marginBottom: 1 }}
               onChange={(event, value) => handleChange("BankName", value)}
               renderInput={(params) => <TextField {...params} label="banks" />}
             />
@@ -219,6 +226,7 @@ const EditCheckForm = ({
           {/* Text field for check number */}
           <Container>
             <TextField
+              sx={{ width: "100%", marginBottom: 2 }}
               type="number"
               id="outlined-basic"
               label="Check number"
@@ -233,6 +241,7 @@ const EditCheckForm = ({
           {/* Save and cancel buttons */}
           <Container>
             <Button
+              sx={{ marginBottom: 1 }}
               variant="contained"
               disabled={
                 !(
@@ -247,7 +256,11 @@ const EditCheckForm = ({
             >
               Save
             </Button>
-            <Button onClick={handleClose} variant="outlined">
+            <Button
+              onClick={handleClose}
+              sx={{ marginBottom: 1, marginLeft: 1 }}
+              variant="outlined"
+            >
               Cancel
             </Button>
           </Container>

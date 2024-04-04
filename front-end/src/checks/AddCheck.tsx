@@ -132,7 +132,7 @@ const AddCheck = () => {
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="contained">
+      <Button sx={{ margin: 2 }} onClick={handleOpen} variant="contained">
         Add Check
       </Button>
       <Modal
@@ -143,7 +143,12 @@ const AddCheck = () => {
       >
         <Box sx={style}>
           <Container>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+            <Typography
+              sx={{ marginBottom: 2 }}
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
               Add Check
             </Typography>
           </Container>
@@ -153,7 +158,7 @@ const AddCheck = () => {
               disablePortal
               id="combo-box-demo"
               options={clients.map((client: ClientType) => client.name)}
-              sx={{ width: 300 }}
+              sx={{ width: '100%', marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Clients" />
               )}
@@ -165,7 +170,9 @@ const AddCheck = () => {
             <TextField
               type="number"
               id="outlined-basic"
+              sx={{ width: '100%', marginBottom: 1 }}
               label="Check amount"
+              inputProps={{ min: "1" }}
               variant="outlined"
               name="CheckAmount"
               onChange={(event) =>
@@ -177,6 +184,7 @@ const AddCheck = () => {
           <Container>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
+              sx={{ width: '100%', marginBottom: 1 }}
                 disablePast
                 format="YYYY-MM-DD"
                 onChange={(date) => handleChange("DepositDate", date)}
@@ -191,7 +199,7 @@ const AddCheck = () => {
               id="combo-box-demo"
               value={addCheckData.DepositStatus}
               options={depositStatus}
-              sx={{ width: 300 }}
+              sx={{ width: '100%', marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Deposit Status" />
               )}
@@ -202,7 +210,7 @@ const AddCheck = () => {
               disablePortal
               id="combo-box-demo"
               options={banks}
-              sx={{ width: 300 }}
+              sx={{ width: '100%', marginBottom: 1 }}
               onChange={(event, value) => handleChange("BankName", value)}
               renderInput={(params) => <TextField {...params} label="banks" />}
             />
@@ -217,11 +225,13 @@ const AddCheck = () => {
               onChange={(event) =>
                 handleChange("CheckNumber", event.target.value)
               }
+              sx={{ width: '100%', marginBottom: 2 }}
             />
           </Container>
 
           <Container>
             <Button
+              sx={{ marginBottom: 1 }}
               variant="contained"
               disabled={
                 !(
@@ -236,7 +246,11 @@ const AddCheck = () => {
             >
               Add
             </Button>
-            <Button onClick={handleClose} variant="outlined">
+            <Button
+              sx={{ marginBottom: 1, marginLeft: 1 }}
+              onClick={handleClose}
+              variant="outlined"
+            >
               cancel
             </Button>
           </Container>
