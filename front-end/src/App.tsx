@@ -9,6 +9,7 @@ import Nav from "./Nav";
 import ClientTable from "./clients/Clients";
 import Statistics from "./statistics/Statistics";
 import Check from "./checks/Check";
+import Banks from "./Banks/Banks";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/statistics" element={<Statistics />} />
             <Route path="/checks" element={<Check />} />
             <Route path="/clients" element={<ClientTable />} />
+            <Route path="/banks" element={<Banks />} />
             <Route
               path="login"
               element={

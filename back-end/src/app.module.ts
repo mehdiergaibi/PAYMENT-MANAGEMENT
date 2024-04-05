@@ -9,6 +9,7 @@ import { ClientsModule } from './clients/clients.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailModule } from './email/email.module';
 import { NotificationModule } from './notification/notification.module';
+import { BanksModule } from './banks/banks.module';
 import * as dotenv from 'dotenv';
 dotenv.config();
 @Module({
@@ -22,6 +23,7 @@ dotenv.config();
     EmailModule,
     ScheduleModule.forRoot(),
     NotificationModule,
+    BanksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
