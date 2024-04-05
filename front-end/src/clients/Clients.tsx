@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditClientForm from "./EditClientForm";
 import AddClient from "./AddClient";
+import SearchClient from "./SearchClient";
 
 const columns = ["Actions", "Name", "Phone Number", "Address", "Note"];
 
@@ -63,8 +64,17 @@ function Clients() {
     setIsEditing(true);
   };
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const filterClients = () => {
+    return data.filter((client: ClientType) => {
+      const searchString = `${client.name} ${client.address} ${client.phoneNumber} ${client.note} `;
+      return searchString.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  };
+
   return (
     <div>
+      <SearchClient setSearchQuery={setSearchQuery} />
       {!error ? (
         <div>
           <AddClient />
@@ -81,26 +91,30 @@ function Clients() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.map((client: ClientType) => {
-                  return (
-                    <TableRow key={client._id}>
-                      <TableCell>
-                        <EditIcon
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleEditClick(client)}
-                        />
-                        <DeleteIcon
-                          style={{ color: "red", cursor: "pointer" }}
-                          onClick={() => deleteClient(client._id)}
-                        />
-                      </TableCell>
-                      <TableCell>{client.name}</TableCell>
-                      <TableCell>{client.phoneNumber}</TableCell>
-                      <TableCell>{client.address}</TableCell>
-                      <TableCell>{client.note}</TableCell>
-                    </TableRow>
-                  );
-                })}
+                {filterClients().length == 0 ? (
+                  <p style={{ color: "red" }}>Not Found</p>
+                ) : (
+                  filterClients().map((client: ClientType) => {
+                    return (
+                      <TableRow key={client._id}>
+                        <TableCell>
+                          <EditIcon
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleEditClick(client)}
+                          />
+                          <DeleteIcon
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => deleteClient(client._id)}
+                          />
+                        </TableCell>
+                        <TableCell>{client.name}</TableCell>
+                        <TableCell>{client.phoneNumber}</TableCell>
+                        <TableCell>{client.address}</TableCell>
+                        <TableCell>{client.note}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
               </TableBody>
             </Table>
           </TableContainer>

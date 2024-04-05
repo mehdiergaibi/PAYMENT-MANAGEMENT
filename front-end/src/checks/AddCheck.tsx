@@ -13,28 +13,6 @@ import { CheckType } from "../types/Check";
 import Snackbar from "@mui/material/Snackbar";
 import { ClientType } from "../types/Client";
 
-const banks = [
-  "AL AKHDAR BANK",
-  "AL BARID BANK",
-  "ARAB BANK",
-  "ATTIJARIWAFA BANK",
-  "BANK AL YOUSR",
-  "BANK ASSAFA",
-  "BANK OF AFRICA",
-  "BANQUE CENTRALE POPULAIRE",
-  "BMCI",
-  "BTI BANK",
-  "CDG CAPITAL",
-  "CFG BANK",
-  "CIH BANK",
-  "CITIBANK MAGHREB",
-  "CREDIT AGRICOLE DU MAROC",
-  "CREDIT DU MAROC",
-  "DAR EL AMANE",
-  "SOCIÉTÉ GÉNÉRALE MAROC",
-  "UMNIA BANK",
-];
-
 const depositStatus = ["Pending", "Deposited", "Not Deposited"];
 
 const style = {
@@ -109,6 +87,20 @@ const AddCheck = () => {
     }));
   };
 
+  const [getBanks, setGetBanks] = useState([]);
+  const URL = "http://localhost:8080/";
+
+  // get banks
+  useEffect(() => {
+    axios
+      .get(`${URL}banks`)
+      .then((response) => {
+        setGetBanks(response.data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
   const handleCloseMessage = (
     event: React.SyntheticEvent | Event,
     reason?: string
@@ -158,7 +150,7 @@ const AddCheck = () => {
               disablePortal
               id="combo-box-demo"
               options={clients.map((client: ClientType) => client.name)}
-              sx={{ width: '100%', marginBottom: 1 }}
+              sx={{ width: "100%", marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Clients" />
               )}
@@ -170,7 +162,7 @@ const AddCheck = () => {
             <TextField
               type="number"
               id="outlined-basic"
-              sx={{ width: '100%', marginBottom: 1 }}
+              sx={{ width: "100%", marginBottom: 1 }}
               label="Check amount"
               inputProps={{ min: "1" }}
               variant="outlined"
@@ -184,7 +176,7 @@ const AddCheck = () => {
           <Container>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-              sx={{ width: '100%', marginBottom: 1 }}
+                sx={{ width: "100%", marginBottom: 1 }}
                 disablePast
                 format="YYYY-MM-DD"
                 onChange={(date) => handleChange("DepositDate", date)}
@@ -199,7 +191,7 @@ const AddCheck = () => {
               id="combo-box-demo"
               value={addCheckData.DepositStatus}
               options={depositStatus}
-              sx={{ width: '100%', marginBottom: 1 }}
+              sx={{ width: "100%", marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Deposit Status" />
               )}
@@ -209,8 +201,8 @@ const AddCheck = () => {
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={banks}
-              sx={{ width: '100%', marginBottom: 1 }}
+              options={getBanks.map((bank) => bank.name)}
+              sx={{ width: "100%", marginBottom: 1 }}
               onChange={(event, value) => handleChange("BankName", value)}
               renderInput={(params) => <TextField {...params} label="banks" />}
             />
@@ -225,7 +217,7 @@ const AddCheck = () => {
               onChange={(event) =>
                 handleChange("CheckNumber", event.target.value)
               }
-              sx={{ width: '100%', marginBottom: 2 }}
+              sx={{ width: "100%", marginBottom: 2 }}
             />
           </Container>
 

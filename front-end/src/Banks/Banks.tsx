@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import SearchBank from "./SearchBank";
 
 const URL = "http://localhost:8080/";
 const style = {
@@ -109,9 +110,18 @@ function Banks() {
       setTimeout(() => location.reload(), 500);
     } catch (error: any) {
       setAddErrors(error.response.data.message);
-      setIsAddError(true)
+      setIsAddError(true);
     }
   };
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filterBanks = () => {
+    return data.filter((check: BankType) => {
+      const searchString = `${check.name} `;
+      return searchString.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  };
+
   return (
     <div style={{ marginTop: "50px", marginBottom: "50px", marginLeft: "2px" }}>
       <Modal
@@ -172,10 +182,7 @@ function Banks() {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {
-            isAddErroe ? addErrors : "Bank added sucssufuly!!"
-          }
-          
+          {isAddErroe ? addErrors : "Bank added sucssufuly!!"}
         </Alert>
       </Snackbar>
       <Modal
@@ -228,16 +235,18 @@ function Banks() {
       </Modal>
       {!error ? (
         <div style={{ maxWidth: "450px", margin: "auto" }}>
-          <Button onClick={() => setIsAddBank(true)} variant="contained">
+          <SearchBank setSearchQuery={setSearchQuery} />
+          <Button onClick={() => setIsAddBank(true)} variant="contained" sx={{marginTop: "10px", marginLeft:"15px"}}>
             Add Bank
           </Button>
-          {data?.map((bank) => (
+          {filterBanks().map((bank) => (
             <div
               key={bank.name}
               style={{
                 display: "flex",
                 marginTop: "10px",
                 alignItems: "center",
+                marginLeft:"10px"
               }}
             >
               <div>

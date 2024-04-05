@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+// Check.js
+import React, { useState, useEffect } from "react";
 import {
   Alert,
   Snackbar,
@@ -8,22 +9,15 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import Paper from '@mui/material/Paper';
-import TableContainer from '@mui/material/TableContainer';
+import Paper from "@mui/material/Paper";
+import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import AddCheck from "./AddCheck";
 import { CheckType } from "../types/Check";
 import EditCheckForm from "./EditCheck";
-/* import { makeStyles } from '@material-ui/core/styles';
-
-
-const useStyles = makeStyles({
-  tableContainer: {
-    overflowX: 'auto',
-  },
-}); */
+import SearchCheck from "./Search";
 
 const columns = [
   "Actions",
@@ -42,8 +36,9 @@ export default function Check() {
   const [error, setError] = useState<string | null>(null);
   const [isDeleted, setIsDeleted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Add state for tracking editing mode
-  const [selectedCheck, setSelectedCheck] = useState<CheckType | null>(null); // Store the selected check for editing
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedCheck, setSelectedCheck] = useState<CheckType | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -80,8 +75,17 @@ export default function Check() {
     setIsEditing(true);
   };
 
+  // Function to filter checks based on search query
+  const filterChecks = () => {
+    return data.filter((check: CheckType) => {
+      const searchString = `${check.ClientName} ${check.CheckAmount} ${check.DepositDate} ${check.DepositStatus} ${check.BankName} ${check.CheckNumber}`;
+      return searchString.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  };
+
   return (
     <div>
+      <SearchCheck setSearchQuery={setSearchQuery} />
       {isDeleted && (
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert
@@ -98,45 +102,55 @@ export default function Check() {
         <div>
           <AddCheck />
           <TableContainer component={Paper}>
-          <Table sx={{tablLayout: 'fixed', whiteSpace: 'nowrap', minWidth: 925 }}  aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column}>{column}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.map((check: CheckType) => {
-                const isoDateString = check.DepositDate;
-                const isoDate = new Date(isoDateString);
-                const year = isoDate.getFullYear();
-                const month = String(isoDate.getMonth() + 1).padStart(2, "0");
-                const day = String(isoDate.getDate()).padStart(2, "0");
-                const formattedDate = `${year}/${month}/${day}`;
-                return (
-                  <TableRow key={check.CheckNumber}>
-                    <TableCell>
-                      <EditIcon
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleEditClick(check)}
-                      />
-                      <DeleteIcon
-                        style={{ color: "red", cursor: "pointer" }}
-                        onClick={() => deleteCheck(check._id)}
-                      />
-                    </TableCell>
-                    <TableCell>{check.ClientName}</TableCell>
-                    <TableCell>{check.CheckAmount}</TableCell>
-                    <TableCell>{formattedDate}</TableCell>
-                    <TableCell>{check.DepositStatus}</TableCell>
-                    <TableCell>{check.BankName}</TableCell>
-                    <TableCell>{check.CheckNumber}</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+            <Table
+              sx={{ tablLayout: "fixed", whiteSpace: "nowrap", minWidth: 925 }}
+              aria-label="simple table"
+            >
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell key={column}>{column}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filterChecks().length == 0 ? (
+                  <p style={{ color: "red" }}>Not Found</p>
+                ) : (
+                  filterChecks().map((check: CheckType) => {
+                    const isoDateString = check.DepositDate;
+                    const isoDate = new Date(isoDateString);
+                    const year = isoDate.getFullYear();
+                    const month = String(isoDate.getMonth() + 1).padStart(
+                      2,
+                      "0"
+                    );
+                    const day = String(isoDate.getDate()).padStart(2, "0");
+                    const formattedDate = `${year}/${month}/${day}`;
+                    return (
+                      <TableRow key={check.CheckNumber}>
+                        <TableCell>
+                          <EditIcon
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleEditClick(check)}
+                          />
+                          <DeleteIcon
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => deleteCheck(check._id)}
+                          />
+                        </TableCell>
+                        <TableCell>{check.ClientName}</TableCell>
+                        <TableCell>{check.CheckAmount}</TableCell>
+                        <TableCell>{formattedDate}</TableCell>
+                        <TableCell>{check.DepositStatus}</TableCell>
+                        <TableCell>{check.BankName}</TableCell>
+                        <TableCell>{check.CheckNumber}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
           </TableContainer>
           {isEditing && selectedCheck && (
             <EditCheckForm check={selectedCheck} setIsEditing={setIsEditing} />

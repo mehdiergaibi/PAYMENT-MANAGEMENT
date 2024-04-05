@@ -17,29 +17,6 @@ import dayjs from "dayjs";
 // Array of deposit status options
 const depositStatus = ["Pending", "Deposited", "Not Deposited"];
 
-// Array of bank options
-const banks = [
-  "AL AKHDAR BANK",
-  "AL BARID BANK",
-  "ARAB BANK",
-  "ATTIJARIWAFA BANK",
-  "BANK AL YOUSR",
-  "BANK ASSAFA",
-  "BANK OF AFRICA",
-  "BANQUE CENTRALE POPULAIRE",
-  "BMCI",
-  "BTI BANK",
-  "CDG CAPITAL",
-  "CFG BANK",
-  "CIH BANK",
-  "CITIBANK MAGHREB",
-  "CREDIT AGRICOLE DU MAROC",
-  "CREDIT DU MAROC",
-  "DAR EL AMANE",
-  "SOCIÉTÉ GÉNÉRALE MAROC",
-  "UMNIA BANK",
-];
-
 // Modal style
 const style = {
   position: "absolute" as "absolute",
@@ -100,6 +77,19 @@ const EditCheckForm = ({
     getClients();
   }, []);
 
+  const [getBanks, setGetBanks] = useState([]);
+  const URL = "http://localhost:8080/";
+// get banks
+useEffect(() => {
+  axios
+    .get(`${URL}banks`)
+    .then((response) => {
+      setGetBanks(response.data);
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
+}, []);
   // Function to handle input changes
   const handleChange = (name: string, value: any) => {
     setEditCheckData((prevData) => ({
@@ -217,7 +207,7 @@ const EditCheckForm = ({
               disablePortal
               id="combo-box-demo"
               value={editCheckData.BankName}
-              options={banks}
+              options={getBanks.map((bank) => bank.name)}
               sx={{ width: "100%", marginBottom: 1 }}
               onChange={(event, value) => handleChange("BankName", value)}
               renderInput={(params) => <TextField {...params} label="banks" />}
