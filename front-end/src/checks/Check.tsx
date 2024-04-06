@@ -42,7 +42,8 @@ export default function Check() {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  // total
+  const [totalCheckAmount, setTotalCheckAmont] = useState(0);
   // Get Checks
   useEffect(() => {
     axios
@@ -83,6 +84,14 @@ export default function Check() {
     });
   };
 
+  useEffect(() => {
+    const totalAmount = data.reduce(
+      (total, check: CheckType) => total + Number(check.CheckAmount),
+      0
+    );
+    setTotalCheckAmont(totalAmount);
+  }, [data]);
+
   return (
     <div>
       <SearchCheck setSearchQuery={setSearchQuery} />
@@ -118,6 +127,8 @@ export default function Check() {
                   <p style={{ color: "red" }}>Not Found</p>
                 ) : (
                   filterChecks().map((check: CheckType) => {
+                    // set total amount
+
                     const isoDateString = check.DepositDate;
                     const isoDate = new Date(isoDateString);
                     const year = isoDate.getFullYear();
@@ -159,6 +170,13 @@ export default function Check() {
       ) : (
         <h1 style={{ color: "red" }}>Error getting Checks</h1>
       )}
+      <h3 style={{ margin:"10px" }}>
+        {filterChecks().length} Check
+      </h3>
+      <h2 style={{ color: "green", margin:"10px" }}>
+        Total:
+        {totalCheckAmount} Dhs
+      </h2>
     </div>
   );
 }
