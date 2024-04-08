@@ -27,7 +27,7 @@ const style = {
   p: 4,
 };
 
-const AddCheck = () => {
+const AddCheck = ({data}) => {
   const initialCheck: CheckType = {
     ClientName: "",
     CheckAmount: "",
@@ -67,13 +67,15 @@ const AddCheck = () => {
     try {
       const url = "http://localhost:8080/check/add-check";
       const response = await axios.post<CheckType>(url, addCheckData);
-      console.log(addCheckData);
+      //console.log(addCheckData);
       setAddCheckData(initialCheck);
       setAdded(true);
       handleClose();
       setOpenMessage(true);
-      setTimeout(() => location.reload(), 500);
-    } catch (error: any) {
+/*       setTimeout(() => location.reload(), 500);
+ */ 
+data(prevData => [...prevData, addCheckData])
+} catch (error: any) {
       setIsError(true);
       setAddCheckError(error.response.data.message);
       //console.log(addCheckError);
@@ -149,7 +151,7 @@ const AddCheck = () => {
             <Autocomplete
               disablePortal
               id="combo-box-demo"
-              options={clients.map((client: ClientType) => client.name)}
+              options={clients.map((client: ClientType) => `${client.firstName} ${client.lastName}` )}
               sx={{ width: "100%", marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Clients" />
@@ -177,6 +179,7 @@ const AddCheck = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 sx={{ width: "100%", marginBottom: 1 }}
+                label="Deposite Date"
                 disablePast
                 format="YYYY-MM-DD"
                 onChange={(date) => handleChange("DepositDate", date)}

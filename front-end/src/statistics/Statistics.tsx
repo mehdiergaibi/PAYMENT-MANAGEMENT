@@ -44,7 +44,13 @@ function Statistics() {
   ];
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", marginTop: "20px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        marginTop: "20px",
+      }}
+    >
       <PieChart
         series={[
           {
@@ -59,6 +65,7 @@ function Statistics() {
           [`& .${pieArcLabelClasses.root}`]: {
             fill: "white",
             fontWeight: "bold",
+            cursor:"pointer"
           },
         }}
         {...size}

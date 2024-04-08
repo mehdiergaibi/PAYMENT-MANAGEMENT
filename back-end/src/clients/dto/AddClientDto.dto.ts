@@ -3,7 +3,11 @@ import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 export class AddClientDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
 
   @IsNotEmpty()
   @IsString()

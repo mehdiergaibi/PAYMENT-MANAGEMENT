@@ -14,6 +14,8 @@ import {
   Typography,
 } from "@mui/material";
 import SearchBank from "./SearchBank";
+import BankCard from "./BankCard";
+import DeleteConfirmation from "../DeleteComfirm";
 
 const URL = "http://localhost:8080/";
 const style = {
@@ -31,7 +33,7 @@ function Banks() {
   const [data, setData] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [selectedBank, setSelectedBank] = useState(null);
+  const [selectedBank, setSelectedBank] = useState<BankType | null>(null);
   const [openMessage, setOpenMessage] = useState(false);
   const [errorEdit, setErrorEdit] = useState(null);
   const [isErrorEdit, setIsErrorEdit] = useState(false);
@@ -50,6 +52,10 @@ function Banks() {
     setOpen(false);
   };
   const handleChange = (name: string, value: any) => {
+    setSelectedBank((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
     setAddBankData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -69,17 +75,21 @@ function Banks() {
     setSelectedBank(bank);
     setOpen(true);
   };
+
   const handleEdit = async () => {
     try {
       const url = `http://localhost:8080/banks/update-bank/${selectedBank._id}`;
       const response = await axios.patch<BankType>(url, selectedBank);
-
+      //console.log(selectedBank);
+      setData((prevData) => {
+        const updatedData = prevData.map((bank: BankType) =>
+          bank._id === selectedBank?._id ? selectedBank : bank
+        );
+        return updatedData;
+      });
       setOpenMessage(true);
-      setTimeout(() => location.reload(), 500);
-
       hadleClose();
       //console.log("after"+isOpen);
-      //setTimeout(() => location.reload(), 3000); // Reload the page after 3 seconds
     } catch (error: any) {
       setIsErrorEdit(true);
       setErrorEdit(error.response?.data.message);
@@ -87,6 +97,16 @@ function Banks() {
     }
   };
 
+  const [checkToDelete, setCheckToDelete] = useState<string | null>(null);
+  const handleDeleteConfirmation = () => {
+    if (checkToDelete) {
+      deleteBank(checkToDelete);
+    }
+    setCheckToDelete(null); // Reset the checkToDelete state
+  };
+  const handleDeleteClick = (checkId: string) => {
+    setCheckToDelete(checkId);
+  };
   const deleteBank = (id: string) => {
     axios
       .delete(`${URL}banks/delete-bank/${id}`)
@@ -103,16 +123,18 @@ function Banks() {
     try {
       const url = "http://localhost:8080/banks/add-bank";
       const response = await axios.post<BankType>(url, addBankData);
+      const newBank = response.data; // New bank data received from the API response
+      setData((prevData) => [...prevData, newBank]); // Update the state with the new bank data
       setAddBankData(initialBank);
       setAdded(true);
       setIsAddBank(false);
       setOpenMessage(true);
-      setTimeout(() => location.reload(), 500);
     } catch (error: any) {
       setAddErrors(error.response.data.message);
       setIsAddError(true);
     }
   };
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const filterBanks = () => {
@@ -123,7 +145,7 @@ function Banks() {
   };
 
   return (
-    <div style={{ marginTop: "50px", marginBottom: "50px", marginLeft: "2px" }}>
+    <div style={{ marginBottom: "50px", marginLeft: "2px" }}>
       <Modal
         open={isAddBank}
         onClose={() => setIsAddBank(false)}
@@ -209,7 +231,7 @@ function Banks() {
               sx={{ width: "100%", marginBottom: 1 }}
               label="Bank"
               variant="outlined"
-              name="bank"
+              name="name"
               value={selectedBank?.name}
               onChange={(event) => handleChange("name", event.target.value)}
             />
@@ -234,40 +256,55 @@ function Banks() {
         </Box>
       </Modal>
       {!error ? (
-        <div style={{ maxWidth: "450px", margin: "auto" }}>
-          <SearchBank setSearchQuery={setSearchQuery} />
-          <Button onClick={() => setIsAddBank(true)} variant="contained" sx={{marginTop: "10px", marginLeft:"15px"}}>
-            Add Bank
-          </Button>
-          {filterBanks().map((bank) => (
-            <div
-              key={bank.name}
-              style={{
-                display: "flex",
-                marginTop: "10px",
-                alignItems: "center",
-                marginLeft:"10px"
-              }}
+        <div>
+          <div style={{ display: "flex" }}>
+            <Button
+              onClick={() => setIsAddBank(true)}
+              variant="contained"
+              sx={{ marginTop: "10px", marginLeft: "15px" }}
             >
-              <div>
-                <EditIcon
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handelEdit(bank)}
-                />
-                <DeleteIcon
-                  style={{
-                    color: "red",
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                    marginRight: "20px",
-                  }}
-                  onClick={() => deleteBank(bank._id)}
+              Add Bank
+            </Button>
+            <SearchBank setSearchQuery={setSearchQuery} />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "10px",
+              alignItems: "center",
+              margin: "20px",
+              justifyContent: "center",
+            }}
+          >
+            {filterBanks().map((bank: BankType) => (
+              <div key={bank.name}>
+                {/* <h4>{bank.name}</h4> */}
+                <BankCard
+                  bank={bank.name}
+                  content={
+                    <div
+                      style={{ position: "absolute", bottom: "0", right: "0" }}
+                    >
+                      <EditIcon
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handelEdit(bank)}
+                      />
+                      <DeleteIcon
+                        style={{
+                          color: "red",
+                          cursor: "pointer",
+                          marginLeft: "10px",
+                          marginRight: "20px",
+                        }}
+                        onClick={() => handleDeleteClick(bank._id)}
+                      />
+                    </div>
+                  }
                 />
               </div>
-
-              <h4>{bank.name}</h4>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       ) : (
         <h1 style={{ color: "red" }}>Error geting Banks</h1>
@@ -300,6 +337,14 @@ function Banks() {
           Bank deleted successfully
         </Alert>
       </Snackbar>
+      {checkToDelete && (
+        <DeleteConfirmation
+          open={!!checkToDelete}
+          onClose={() => setCheckToDelete(null)}
+          onConfirm={handleDeleteConfirmation} // Handle the deletion action
+          page={"Bank"}
+        />
+      )}
     </div>
   );
 }

@@ -4,8 +4,11 @@ import mongoose from 'mongoose';
 
 @Schema() // tells mongoose that is a schema of the collection user
 export class Client {
-  @Prop({ required: [true, 'client name is required'] }) // tells mongoose thats a property
-  name: string;
+  @Prop({ required: [true, 'client first name is required'] }) // tells mongoose thats a property
+  firstName: string;
+
+  @Prop({ required: [true, 'client last name is required'] }) // tells mongoose thats a property
+  lastName: string;
 
   @Prop({
     required: [true, 'phone number is required'],
@@ -13,10 +16,10 @@ export class Client {
   })
   phoneNumber: string;
 
-  @Prop({ required: false})
+  @Prop({ required: false })
   address: string;
 
-  @Prop({ required: false})
+  @Prop({ required: false })
   note: string;
 
   /* @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Check' }] })

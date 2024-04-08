@@ -9,8 +9,11 @@ import { AddClientDto } from './AddClientDto.dto';
 export class UpdateClientDto extends PartialType(AddClientDto) {
   @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  name: string;
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
 
   @IsNotEmpty()
   @IsString()

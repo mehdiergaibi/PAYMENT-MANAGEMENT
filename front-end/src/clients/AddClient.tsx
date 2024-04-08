@@ -24,9 +24,10 @@ const style = {
   p: 4,
 };
 
-function AddClient() {
+function AddClient({data}) {
   const initialClient: ClientType = {
-    name: "",
+    firstName: "",
+    lastName: "",
     phoneNumber: "",
     address: "",
     note: "",
@@ -49,7 +50,7 @@ function AddClient() {
       setAdded(true);
       handleClose();
       setOpenMessage(true);
-      setTimeout(() => location.reload(), 500);
+      data( (preData) => [...preData, addClientData] )
     } catch (error: any) {
       setIsError(true);
       setAddClientError(error.response.data.message);
@@ -110,10 +111,21 @@ function AddClient() {
               type="text"
               id="outlined-basic"
               sx={{ width: "100%", marginBottom: 1 }}
-              label="Name"
+              label="First Name"
               variant="outlined"
-              name="name"
-              onChange={(event) => handleChange("name", event.target.value)}
+              name="firstName"
+              onChange={(event) => handleChange("firstName", event.target.value)}
+            />
+          </Container>
+          <Container>
+            <TextField
+              type="text"
+              id="outlined-basic"
+              sx={{ width: "100%", marginBottom: 1 }}
+              label="Last Name"
+              variant="outlined"
+              name="lastName"
+              onChange={(event) => handleChange("lastName", event.target.value)}
             />
           </Container>
           <Container>
@@ -158,7 +170,7 @@ function AddClient() {
             <Button
               sx={{ marginBottom: 1 }}
               variant="contained"
-              disabled={!(addClientData.name && addClientData.phoneNumber)}
+              disabled={!(addClientData.firstName && addClientData.lastName && addClientData.phoneNumber)}
               onClick={addClientHandler}
             >
               Add

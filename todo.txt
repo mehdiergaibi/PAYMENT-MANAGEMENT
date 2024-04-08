@@ -1,3 +1,30 @@
 add Bank => done
 search check/client/bank with filter statev=> done
 get banks and use them in the code do not use just the array => done
+
+
+pagination => done
+button search total design => done
+format check amount and check total => done
+action liman => done
+chip mui status => done
+pop up delete check => done
+Snackbar not working well in client for deleting => done
+useState add check => done
+disabled => done
+ful name => done
+if lhag date bach idiposa oma deposach badlo mn pending l not deposited
+sort table
+handel error messages with a template
+
+--------------------- client
+name las name => done
+how many check given by cient
+when clicking at stat go to check wit this status
+loading
+cahnge to side bar
+
+
+
+unpaid
+fournisseur

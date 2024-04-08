@@ -7,6 +7,7 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TablePagination,
   TableRow,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -18,15 +19,17 @@ import AddCheck from "./AddCheck";
 import { CheckType } from "../types/Check";
 import EditCheckForm from "./EditCheck";
 import SearchCheck from "./Search";
+import Chip from "@mui/material/Chip";
+import DeleteConfirmation from "../DeleteComfirm";
 
 const columns = [
-  "Actions",
   "Client",
   "Check Amount",
   "Deposit Date",
   "Deposit Status",
   "Bank Name",
   "Check Number",
+  "Actions",
 ];
 
 const URL = "http://localhost:8080/";
@@ -39,11 +42,29 @@ export default function Check() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedCheck, setSelectedCheck] = useState<CheckType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = React.useState(0);
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   // total
   const [totalCheckAmount, setTotalCheckAmont] = useState(0);
+
+  const [checkToDelete, setCheckToDelete] = useState<string | null>(null);
+
+  const handleDeleteClick = (checkId: string) => {
+    setCheckToDelete(checkId);
+  };
+
+  const handleDeleteConfirmation = () => {
+    if (checkToDelete) {
+      deleteCheck(checkToDelete);
+    }
+    setCheckToDelete(null); // Reset the checkToDelete state
+  };
+
   // Get Checks
   useEffect(() => {
     axios
@@ -91,10 +112,17 @@ export default function Check() {
     );
     setTotalCheckAmont(totalAmount);
   }, [data]);
-
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   return (
     <div>
-      <SearchCheck setSearchQuery={setSearchQuery} />
       {isDeleted && (
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert
@@ -109,74 +137,138 @@ export default function Check() {
       )}
       {!error ? (
         <div>
-          <AddCheck />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <AddCheck data={setData} />
+            <div style={{ marginBottom: 5 }}>
+              <SearchCheck setSearchQuery={setSearchQuery} />
+            </div>
+          </div>
           <TableContainer component={Paper}>
             <Table
+              stickyHeader
               sx={{ tablLayout: "fixed", whiteSpace: "nowrap", minWidth: 925 }}
-              aria-label="simple table"
+              aria-label="sticky table"
             >
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell key={column}>{column}</TableCell>
+                    <TableCell key={column} sx={{ backgroundColor: "#E0E0E0" }}>
+                      {column}
+                    </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filterChecks().length == 0 ? (
-                  <p style={{ color: "red" }}>Not Found</p>
+                  <p style={{ color: "red" }}>Nothing to show</p>
                 ) : (
-                  filterChecks().map((check: CheckType) => {
-                    // set total amount
+                  filterChecks()
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((check: CheckType) => {
+                      // set total amount
 
-                    const isoDateString = check.DepositDate;
-                    const isoDate = new Date(isoDateString);
-                    const year = isoDate.getFullYear();
-                    const month = String(isoDate.getMonth() + 1).padStart(
-                      2,
-                      "0"
-                    );
-                    const day = String(isoDate.getDate()).padStart(2, "0");
-                    const formattedDate = `${year}/${month}/${day}`;
-                    return (
-                      <TableRow key={check.CheckNumber}>
-                        <TableCell>
-                          <EditIcon
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleEditClick(check)}
-                          />
-                          <DeleteIcon
-                            style={{ color: "red", cursor: "pointer" }}
-                            onClick={() => deleteCheck(check._id)}
-                          />
-                        </TableCell>
-                        <TableCell>{check.ClientName}</TableCell>
-                        <TableCell>{check.CheckAmount}</TableCell>
-                        <TableCell>{formattedDate}</TableCell>
-                        <TableCell>{check.DepositStatus}</TableCell>
-                        <TableCell>{check.BankName}</TableCell>
-                        <TableCell>{check.CheckNumber}</TableCell>
-                      </TableRow>
-                    );
-                  })
+                      const isoDateString = check.DepositDate;
+                      const isoDate = new Date(isoDateString);
+                      const year = isoDate.getFullYear();
+                      const month = String(isoDate.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(isoDate.getDate()).padStart(2, "0");
+                      const formattedDate = `${year}/${month}/${day}`;
+                      return (
+                        <TableRow hover key={check.CheckNumber}>
+                          <TableCell>{check.ClientName}</TableCell>
+                          <TableCell>
+                            {Number(check.CheckAmount).toLocaleString("en-US")}
+                          </TableCell>
+                          <TableCell>{formattedDate}</TableCell>
+                          <TableCell>
+                            {(() => {
+                              let chipColor = "";
+                              if (check.DepositStatus === "Pending") {
+                                chipColor = "warning";
+                              } else if (check.DepositStatus === "Deposited") {
+                                chipColor = "success";
+                              } else {
+                                chipColor = "error";
+                              }
+                              return (
+                                <Chip
+                                  label={check.DepositStatus}
+                                  color={chipColor}
+                                />
+                              );
+                            })()}
+                          </TableCell>
+                          <TableCell>{check.BankName}</TableCell>
+                          <TableCell>{check.CheckNumber}</TableCell>
+                          <TableCell>
+                            <EditIcon
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleEditClick(check)}
+                            />
+                            <DeleteIcon
+                              style={{ color: "red", cursor: "pointer" }}
+                              onClick={() => handleDeleteClick(check._id)}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                 )}
+                <TableRow>
+                  <TableCell
+                    align="right"
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                    }}
+                  >
+                    Total:
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                    }}
+                  >
+                    {Number(totalCheckAmount).toLocaleString("en-US")} Dhs
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, 100]}
+              component="div"
+              count={filterChecks().length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </TableContainer>
           {isEditing && selectedCheck && (
-            <EditCheckForm check={selectedCheck} setIsEditing={setIsEditing} />
+            <EditCheckForm check={selectedCheck} setIsEditing={setIsEditing} data={setData} />
+          )}
+          {checkToDelete && (
+            <DeleteConfirmation
+              open={!!checkToDelete}
+              onClose={() => setCheckToDelete(null)}
+              onConfirm={handleDeleteConfirmation} // Handle the deletion action
+              page={"Check"}
+            />
           )}
         </div>
       ) : (
         <h1 style={{ color: "red" }}>Error getting Checks</h1>
       )}
-      <h3 style={{ margin:"10px" }}>
-        {filterChecks().length} Check
-      </h3>
-      <h2 style={{ color: "green", margin:"10px" }}>
-        Total:
-        {totalCheckAmount} Dhs
-      </h2>
     </div>
   );
 }

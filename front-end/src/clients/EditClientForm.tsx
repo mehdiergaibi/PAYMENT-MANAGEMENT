@@ -28,6 +28,7 @@ const style = {
 function EditClientForm({
   client,
   setIsEditing,
+  data
 }: {
   client: ClientType;
   setIsEditing: Function;
@@ -66,9 +67,14 @@ function EditClientForm({
 
       setIsOpen(true);
       console.log(isOpen);
-      setTimeout(() => location.reload(), 500);
+      data((prevData) => {
+        const updatedData = prevData.map((bank: ClientType) =>
+          bank._id === editCheckData?._id ? editCheckData : bank
+        );
+        return updatedData;
+      });
 
-      //handleClose();
+      handleClose();
       //console.log("after"+isOpen);
       //setTimeout(() => location.reload(), 3000); // Reload the page after 3 seconds
     } catch (error: any) {
@@ -102,11 +108,23 @@ function EditClientForm({
               type="text"
               id="outlined-basic"
               sx={{ width: "100%", marginBottom: 1 }}
-              label="Name"
+              label="First Name"
               variant="outlined"
-              name="Name"
-              value={editCheckData.name}
-              onChange={(event) => handleChange("name", event.target.value)}
+              name="firstName"
+              value={editCheckData.firstName}
+              onChange={(event) => handleChange("firstName", event.target.value)}
+            />
+          </Container>
+          <Container>
+            <TextField
+              type="text"
+              id="outlined-basic"
+              sx={{ width: "100%", marginBottom: 1 }}
+              label="Last Name"
+              variant="outlined"
+              name="lastName"
+              value={editCheckData.lastName}
+              onChange={(event) => handleChange("lastName", event.target.value)}
             />
           </Container>
           <Container>
@@ -151,7 +169,7 @@ function EditClientForm({
             <Button
               sx={{ marginBottom: 1 }}
               variant="contained"
-              disabled={!(editCheckData.name && editCheckData.phoneNumber)}
+              disabled={!(editCheckData.firstName && editCheckData.lastName && editCheckData.phoneNumber)}
               onClick={handleEdit}
             >
               Save

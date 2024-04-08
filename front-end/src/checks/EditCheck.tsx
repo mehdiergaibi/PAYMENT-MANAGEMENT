@@ -33,6 +33,7 @@ const style = {
 const EditCheckForm = ({
   check,
   setIsEditing,
+  data,
 }: {
   check: CheckType;
   setIsEditing: Function;
@@ -79,17 +80,17 @@ const EditCheckForm = ({
 
   const [getBanks, setGetBanks] = useState([]);
   const URL = "http://localhost:8080/";
-// get banks
-useEffect(() => {
-  axios
-    .get(`${URL}banks`)
-    .then((response) => {
-      setGetBanks(response.data);
-    })
-    .catch((error) => {
-      console.log(error.message);
-    });
-}, []);
+  // get banks
+  useEffect(() => {
+    axios
+      .get(`${URL}banks`)
+      .then((response) => {
+        setGetBanks(response.data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
   // Function to handle input changes
   const handleChange = (name: string, value: any) => {
     setEditCheckData((prevData) => ({
@@ -108,8 +109,14 @@ useEffect(() => {
 
       setIsOpen(true);
       console.log(isOpen);
-      setTimeout(() => location.reload(), 500);
 
+      data((prevData) => {
+        const updatedData = prevData.map((check: CheckType) =>
+          check._id === editCheckData._id ? editCheckData : check
+        );
+        return updatedData;
+      });
+      handleClose();
       //handleClose();
       //console.log("after"+isOpen);
       //setTimeout(() => location.reload(), 3000); // Reload the page after 3 seconds
@@ -153,7 +160,7 @@ useEffect(() => {
               disablePortal
               id="combo-box-demo"
               value={editCheckData.ClientName}
-              options={clients.map((client) => client.name)}
+              options={clients.map((client) => `${client.firstName} ${client.lastName}`)}
               sx={{ width: "100%", marginBottom: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Clients" />
