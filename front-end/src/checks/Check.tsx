@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import {
   Alert,
   Snackbar,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -21,6 +22,8 @@ import EditCheckForm from "./EditCheck";
 import SearchCheck from "./Search";
 import Chip from "@mui/material/Chip";
 import DeleteConfirmation from "../DeleteComfirm";
+import LinearProgress from "@mui/material/LinearProgress";
+import SortingAndFiltring from "../fiteringAndSorting/SortingAndFiltring";
 
 const columns = [
   "Client",
@@ -141,13 +144,27 @@ export default function Check() {
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
             }}
           >
-            <AddCheck data={setData} />
-            <div style={{ marginBottom: 5 }}>
-              <SearchCheck setSearchQuery={setSearchQuery} />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Stack direction="row" spacing={2}>
+                <AddCheck data={setData} />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <SearchCheck setSearchQuery={setSearchQuery} />
+                </div>
+              </Stack>
+            </div>
+            <div style={{marginRight:"10px"}}>
+              <SortingAndFiltring
+                setData={setData}
+                data={data}
+                compo={"check"}
+              />
             </div>
           </div>
+
           <TableContainer component={Paper}>
             <Table
               stickyHeader
@@ -165,7 +182,7 @@ export default function Check() {
               </TableHead>
               <TableBody>
                 {filterChecks().length == 0 ? (
-                  <p style={{ color: "red" }}>Nothing to show</p>
+                  <h3>Nothing to show</h3>
                 ) : (
                   filterChecks()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -190,7 +207,7 @@ export default function Check() {
                           <TableCell>{formattedDate}</TableCell>
                           <TableCell>
                             {(() => {
-                              let chipColor = "";
+                              let chipColor: string = "";
                               if (check.DepositStatus === "Pending") {
                                 chipColor = "warning";
                               } else if (check.DepositStatus === "Deposited") {
@@ -255,7 +272,11 @@ export default function Check() {
             />
           </TableContainer>
           {isEditing && selectedCheck && (
-            <EditCheckForm check={selectedCheck} setIsEditing={setIsEditing} data={setData} />
+            <EditCheckForm
+              check={selectedCheck}
+              setIsEditing={setIsEditing}
+              data={setData}
+            />
           )}
           {checkToDelete && (
             <DeleteConfirmation
@@ -267,7 +288,10 @@ export default function Check() {
           )}
         </div>
       ) : (
-        <h1 style={{ color: "red" }}>Error getting Checks</h1>
+        /*  <h1 style={{ color: "red" }}>Error getting Checks</h1> */
+        <div>
+          <LinearProgress sx={{ marginTop: "20px" }} />
+        </div>
       )}
     </div>
   );

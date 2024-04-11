@@ -217,7 +217,7 @@ const EditCheckForm = ({
               options={getBanks.map((bank) => bank.name)}
               sx={{ width: "100%", marginBottom: 1 }}
               onChange={(event, value) => handleChange("BankName", value)}
-              renderInput={(params) => <TextField {...params} label="banks" />}
+              renderInput={(params) => <TextField {...params} label="Bank" />}
             />
           </Container>
           {/* Text field for check number */}

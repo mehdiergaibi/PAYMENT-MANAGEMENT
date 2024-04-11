@@ -19,6 +19,8 @@ import EditClientForm from "./EditClientForm";
 import AddClient from "./AddClient";
 import SearchClient from "./SearchClient";
 import DeleteConfirmation from "../DeleteComfirm";
+import LinearProgress from "@mui/material/LinearProgress";
+import SortingAndFiltring from "../fiteringAndSorting/SortingAndFiltring";
 
 const columns = ["Full Name", "Phone Number", "Address", "Note", "Actions"];
 
@@ -99,14 +101,32 @@ function Clients() {
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <AddClient data={setData} />
-        <div style={{ marginBottom: 5 }}>
-          <SearchClient setSearchQuery={setSearchQuery} />
-        </div>
-      </div>
       {!error ? (
         <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <AddClient data={setData} />
+              <div style={{ marginBottom: 5 }}>
+                <SearchClient setSearchQuery={setSearchQuery} />
+              </div>
+            </div>
+
+            <div style={{marginRight:"10px"}}>
+              <SortingAndFiltring
+                setClient={setData}
+                clientData={data}
+                compo={"client"}
+              />
+            </div>
+          </div>
+
           <TableContainer component={Paper}>
             <Table
               stickyHeader
@@ -124,14 +144,16 @@ function Clients() {
               </TableHead>
               <TableBody>
                 {filterClients().length == 0 ? (
-                  <p style={{ color: "red" }}>Nothing to show</p>
+                  <h3>Nothing to show</h3>
                 ) : (
                   filterClients()
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((client: ClientType) => {
                       return (
                         <TableRow hover key={client._id}>
-                          <TableCell>{client.firstName} {client.lastName}</TableCell>
+                          <TableCell>
+                            {client.firstName} {client.lastName}
+                          </TableCell>
                           <TableCell>{client.phoneNumber}</TableCell>
                           <TableCell>{client.address}</TableCell>
                           <TableCell>{client.note}</TableCell>
@@ -170,7 +192,9 @@ function Clients() {
           )}
         </div>
       ) : (
-        <h1 style={{ color: "red" }}>Error getting Clients</h1>
+        <div>
+          <LinearProgress sx={{ marginTop: "20px" }} />
+        </div>
       )}
       {isDeleted && (
         <Snackbar

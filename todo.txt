@@ -15,16 +15,17 @@ disabled => done
 ful name => done
 if lhag date bach idiposa oma deposach badlo mn pending l not deposited
 sort table
-handel error messages with a template
+handel error messages with a template with materiel ui textfield validation !!!!!!!!!!!!! and * to required
 
 --------------------- client
 name las name => done
 how many check given by cient
 when clicking at stat go to check wit this status
-loading
+loading => done
 cahnge to side bar
 
-
+useContext with data get Clients.......
+get rid of errors in vscode files
 
 unpaid
 fournisseur

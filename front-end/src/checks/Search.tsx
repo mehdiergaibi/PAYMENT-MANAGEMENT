@@ -54,7 +54,7 @@ function SearchCheck({ setSearchQuery }) {
   };
 
   return (
-    <Search>
+    <Search sx={{ marginBottom: 1 }}>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>

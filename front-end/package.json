@@ -23,6 +23,7 @@
     "dayjs": "^1.11.10",
     "framer-motion": "^11.0.20",
     "material-react-table": "^2.12.1",
+    "material-ui-popup-state": "^5.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-usestateref": "^1.0.8"
